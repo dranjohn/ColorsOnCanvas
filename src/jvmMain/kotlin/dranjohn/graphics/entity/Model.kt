@@ -45,10 +45,16 @@ open class Model(positions: FloatArray) {
     
     fun bind() {
         GL30.glBindVertexArray(vaoId)
+        ModelTracker.currentModel = this
     }
 
     fun unbind() {
         GL30.glBindVertexArray(0)
+        ModelTracker.currentModel = null
+    }
+    
+    fun isBound(): Boolean {
+        return ModelTracker.currentModel === this
     }
     
     
@@ -65,5 +71,9 @@ open class Model(positions: FloatArray) {
                 GL30.glDeleteVertexArrays(vao)
             }
         }
+    }
+    
+    private object ModelTracker {
+        var currentModel: Model? = null
     }
 }

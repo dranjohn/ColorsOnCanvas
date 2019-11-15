@@ -2,6 +2,7 @@ package dranjohn.graphics.scene
 
 import dranjohn.graphics.Window
 import dranjohn.graphics.entity.Entity
+import dranjohn.graphics.entity.Quad
 import dranjohn.graphics.scene.camera.Camera
 import dranjohn.graphics.scene.camera.OrthogonalCamera
 import org.lwjgl.opengl.GL11
@@ -26,6 +27,10 @@ class LWJGLScene(window: Window) : Scene {
 	
 	override fun renderAll() {
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT or GL11.GL_DEPTH_BUFFER_BIT)
+		
+		if (!Quad.isBound()) {
+			Quad.bind()
+		}
 		
 		for (renderer in renderers) {
 			renderer.renderStoredEntities()

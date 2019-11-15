@@ -21,19 +21,14 @@ actual class Renderer<EntityType : Entity>(private val shader: Shader<EntityType
 	}
 	
 	actual fun renderEntity(entity: EntityType) {
-		val model = Quad
 		shader.bind()
-		
-		model.bind()
 		
 		GL20.glEnableVertexAttribArray(0)
 		shader.loadEntityData(entity)
 		
-		GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, model.vertexCount)
+		GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, Quad.vertexCount)
 		
 		GL20.glDisableVertexAttribArray(0)
-		
-		model.unbind()
 	}
 	
 	
