@@ -24,9 +24,9 @@ build
 
 .gradle
 gradle
-build.gradle
+build.gradle.kts
 gradle.properties
-settings.gradle
+settings.gradle.kts
 
 # IntelliJ
 .idea
