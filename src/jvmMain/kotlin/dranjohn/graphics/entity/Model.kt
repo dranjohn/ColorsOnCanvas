@@ -1,11 +1,6 @@
 package dranjohn.graphics.entity
 
-import org.lwjgl.BufferUtils
-import org.lwjgl.opengl.GL11
-import org.lwjgl.opengl.GL15
-import org.lwjgl.opengl.GL20
-import org.lwjgl.opengl.GL30
-import java.nio.FloatBuffer
+import org.lwjgl.opengl.*
 
 open class Model(positions: FloatArray) {
 	private val vaoId: Int = GL30.glGenVertexArrays()
@@ -28,18 +23,43 @@ open class Model(positions: FloatArray) {
 		
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo)
 		
-		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, bufferData(data), GL15.GL_STATIC_DRAW)
+		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, data, GL15.GL_STATIC_DRAW)
 		GL20.glVertexAttribPointer(index, dataPointSize, GL11.GL_FLOAT, false, 0, 0)
 		
 		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0)
 	}
 	
-	private fun bufferData(data: FloatArray): FloatBuffer {
-		val buffer = BufferUtils.createFloatBuffer(data.size)
-		buffer.put(data)
-		buffer.flip()
+	private fun allocateInstanceArrayBuffer(floatCapacities: IntArray, maxInstances: Int) {
+		//check if all requirement for instance buffer
+		require(floatCapacities.isNotEmpty())
+		require(floatCapacities.all { it > 0 })
 		
-		return buffer
+		require(maxInstances >= 2)
+		
+		
+		//allocate buffer with required capacity
+		val vbo = GL15.glGenBuffers()
+		vbos += vbo
+		
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vbo)
+		GL15.glBufferData(GL15.GL_ARRAY_BUFFER, (floatCapacities.sum() * maxInstances).toLong() * 4, GL15.GL_STREAM_DRAW)
+		
+		//bind VAO and set attribute pointers
+		GL30.glBindVertexArray(vaoId)
+		
+		var attributeIndex = 1
+		var offset: Long = 0
+		
+		for (floatCapacity in floatCapacities) {
+			GL20.glVertexAttribPointer(attributeIndex, floatCapacity, GL11.GL_FLOAT, false, floatCapacity * 4, offset * 4)
+			GL33.glVertexAttribDivisor(attributeIndex, 1)
+			
+			offset += floatCapacity
+			attributeIndex++
+		}
+		
+		GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0)
+		GL30.glBindVertexArray(0)
 	}
 	
 	

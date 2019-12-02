@@ -21,12 +21,7 @@
 
 # Gradle and build results
 build
-
 .gradle
-gradle
-build.gradle.kts
-gradle.properties
-settings.gradle.kts
 
 # IntelliJ
 .idea
